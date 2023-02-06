@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import shop.mtcoding.blog.dto.user.UserReq.JoinReqDto;
+import shop.mtcoding.blog.dto.user.UserReq.LoginReqDto;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.model.UserRepository;
@@ -16,8 +17,6 @@ import shop.mtcoding.blog.service.UserService;
 @Controller
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private HttpSession session;
     @Autowired
@@ -29,13 +28,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String username, String password) {
-        User user = userRepository.findByUsernameAndPassword(username, password);
-
-        if (user == null) {
-            throw new CustomException("로그인 실패");
+    // public String login(String username, String password) {
+    public String login(LoginReqDto loginReqDto) {
+        // 확실히 여기서 다 통과하는지 확인해야함. (길이라던가 한글이라던가...)
+        if (loginReqDto.getUsername() == null || loginReqDto.getUsername().isEmpty()) {
+            throw new CustomException("username을 작성해주세요");
         }
-        session.setAttribute("principal", user);
+        if (loginReqDto.getPassword() == null || loginReqDto.getPassword().isEmpty()) {
+            throw new CustomException("password를 작성해주세요");
+        }
+        // controller는 validation 체크하고 , 서비스 요청하고 값전달하면 끝.
+        User principal = userService.로그인(loginReqDto);
+
+        session.setAttribute("principal", principal);
 
         return "redirect:/";
 
@@ -48,9 +53,9 @@ public class UserController {
 
     @PostMapping("/join")
     public String join(JoinReqDto joinReqDto) {
-        System.out.println(joinReqDto.getUsername());
-        System.out.println(joinReqDto.getPassword());
-        System.out.println(joinReqDto.getEmail());
+        // System.out.println(joinReqDto.getUsername());
+        // System.out.println(joinReqDto.getPassword());
+        // System.out.println(joinReqDto.getEmail());
 
         if (joinReqDto.getUsername() == null || joinReqDto.getUsername().isEmpty()) {
             throw new CustomException("username을 작성해주세요");

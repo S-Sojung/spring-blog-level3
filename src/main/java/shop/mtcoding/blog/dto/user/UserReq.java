@@ -13,4 +13,13 @@ public class UserReq {
         private String password;
         private String email;
     }
+
+    @Getter
+    @Setter
+    public static class LoginReqDto {
+        private String username;
+        private String password;
+    }
+
+    // public record 라는 문법있다
 }
