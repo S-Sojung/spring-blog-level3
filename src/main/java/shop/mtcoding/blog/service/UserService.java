@@ -17,7 +17,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional
-    public int 회원가입(JoinReqDto joinReqDto) {
+    public void 회원가입(JoinReqDto joinReqDto) {
         // int result = userRepository.insert(joinReqDto.getUsername(),
         // joinReqDto.getPassword(), joinReqDto.getEmail());
 
@@ -33,7 +33,10 @@ public class UserService {
         }
         // 여기서는 lock 걸린다. 그냥 트랜잭션에 동시접근 못한다고 생각가능하다. (하지만 메서드 자체는 접근 가능하다는걸 알고 있자)
         int result = userRepository.insert(joinReqDto.getUsername(), joinReqDto.getPassword(), joinReqDto.getEmail());
-        return result;
+        if (result != 1) {
+            throw new CustomException("회원가입실패");
+        }
+        // return result;
 
     }
 

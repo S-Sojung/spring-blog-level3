@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/hello" enctype="multipart/form-data" method="post">
+        <!--다양한 타입이라지만 두가지 타입, x-www-form-urlencoded와 파일-->
+        <input type="text" name="title" />
+        <input type="file" name="thumnail" />
+        <button type="submit">파일전송</button>
+    </form>
+
+    <script>
+        $.ajax({
+            data: 파일,
+            contentType: "image/png"
+        });
+
+        let file = "";
+        //base64 인코딩
+        let json = "file문자열";
+
+        let data = {
+            "title": "title",
+            "thumnale": json
+        }
+        $.ajax({
+            data: JSON.stringify(json), //자바스크립트 오브젝트를 스트링으로 넣어줌
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            }
+        });
+    </script>
+</body>
+
+</html>
