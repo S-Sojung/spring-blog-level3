@@ -3,16 +3,16 @@
     <div class="container my-3">
         <form>
             <div class="form-group mb-2">
-                <input type="text" class="form-control" placeholder="Enter title" name="title" id="title" value="제목입니다">
+                <input type="text" class="form-control" placeholder="Enter title" name="title" id="title" value="${dto.title}">
             </div>
 
             <div class="form-group mb-2">
                 <textarea class="form-control summernote" rows="5" id="content" name="content">
-                    내용입니다.
+                    ${dto.content}
                 </textarea>
             </div>
+        <button type="button" class="btn btn-primary" onClick="updateBtn">글수정완료</button>
         </form>
-        <button type="button" class="btn btn-primary">글수정완료</button>
 
     </div>
 

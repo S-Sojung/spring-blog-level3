@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +41,27 @@ public class BoardControllerTest {
 
     @Autowired
     private ObjectMapper om;
+
+    @Test
+    public void update_test() throws Exception {
+        // given
+        int id = 8;
+        String requestBody = "title=수정된 제목입니다&content=수정된 내용입니다";
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                put("/board/" + id)
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .session(mockSession)); // session이 주입된 채로 요청
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.print("테스트: " + responseBody);
+
+        // then
+        // resultActions.andExpect(jsonPath("$.msg").value("수정 성공"));
+        // resultActions.andExpect(status().isOk());
+    }
 
     @Test
     public void delete_test() throws Exception {

@@ -54,4 +54,8 @@ public class BoardService {
             // 이 로그에는 e.getMassage() 와 시간, 유저 정보들을 넘겨줘야함 .(새로운 Exception... 을 만들면됨 )
         }
     }
+
+    public void 게시글수정(int id, int userId) {
+
+    }
 }

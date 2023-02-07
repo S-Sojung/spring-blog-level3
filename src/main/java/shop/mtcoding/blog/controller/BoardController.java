@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.ResponseDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
+import shop.mtcoding.blog.dto.board.BoardReq.BoardUpdateReqDto;
 import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.BoardRepository;
@@ -65,8 +67,35 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}/updateForm")
-    public String updateForm(@PathVariable int id) {
+    public String updateForm(@PathVariable int id, Model model) {
+        model.addAttribute("dto", boardRepository.findById(id));
         return "board/updateForm";
+    }
+
+    @PutMapping("/board/{id}") // 인증과 권한이 필요함
+    public @ResponseBody ResponseEntity<?> update(@PathVariable int id, BoardUpdateReqDto boardUpdateReqDto) {
+        // 인증
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
+        }
+        // 유효성검사
+        if (boardUpdateReqDto.getTitle() == null || boardUpdateReqDto.getTitle().isEmpty()) {
+            throw new CustomException("title 작성해주세요");
+        }
+        if (boardUpdateReqDto.getContent() == null || boardUpdateReqDto.getContent().isEmpty()) {
+            throw new CustomException("content 작성해주세요");
+        }
+        if (boardUpdateReqDto.getTitle().length() > 100) {
+            throw new CustomException("title의 길이가 100자 이하여야 합니다");
+        }
+
+        // 서비스에서 권한 체크
+        boardService.게시글수정(id, principal.getId());
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정 성공", boardUpdateReqDto), HttpStatus.OK);
+
+        // return "redirect:/board/" + id;
     }
 
     @PostMapping("/board")
