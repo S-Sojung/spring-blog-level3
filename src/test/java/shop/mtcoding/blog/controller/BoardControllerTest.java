@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
@@ -51,7 +52,16 @@ public class BoardControllerTest {
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.print("테스트: " + responseBody);
 
+        /**
+         * jsonPath
+         * 최상위를 찾을 때는 $ 를 이용
+         * 객체 탐색 은 닷 (.) 을 이용
+         * 배열 : [0] 인덱스 이용
+         * {"code":1,"msg":"삭제성공","data":null}
+         * => $.code, $.msg ,$.data 등으로 찾을 수 있다.
+         */
         // then
+        resultActions.andExpect(jsonPath("$.msg").value("삭제성공"));
         resultActions.andExpect(status().isOk());
     }
 

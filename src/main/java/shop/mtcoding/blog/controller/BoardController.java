@@ -98,12 +98,12 @@ public class BoardController {
         User principal = (User) session.getAttribute("principal");
         if (principal == null) {
             // throw new CustomException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
-            // 자바 스크립트 응답을 하면 안되고 데이터로 응답해야함 !!
+            // 자바스크립트로 JSON을 응답 해주어야하기 때문에 새로운 Exception을 만들어줌
             throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
 
         }
         // 권한 검사는 DB를 열어봐야하기 때문에 서비스에서 함.
-        boardService.게시글삭제(id);
+        boardService.게시글삭제(id, principal.getId());
 
         // form태그는 수행이 완료했을 때 page를 돌려주고 다시그리게도미
         // get 요청하면 거기에 대한 page를 만들어내서 서버사이드 랜더링을함.
