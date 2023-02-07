@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,12 +41,28 @@ public class BoardControllerTest {
     private ObjectMapper om;
 
     @Test
-    public void datail_test() throws Exception {
+    public void delete_test() throws Exception {
         // given
+        int id = 1;
 
         // when
         ResultActions resultActions = mvc.perform(
-                get("/board/4"));
+                delete("/board/" + id).session(mockSession)); // session이 주입된 채로 요청
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.print("테스트: " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    public void datail_test() throws Exception {
+        // given
+        int id = 4;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                get("/board/" + id));
 
         Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
         BoardDetailRespDto dto = (BoardDetailRespDto) map.get("dto");

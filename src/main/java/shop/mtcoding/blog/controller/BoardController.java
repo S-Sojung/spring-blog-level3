@@ -4,13 +4,18 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blog.dto.ResponseDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
+import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.BoardRepository;
 import shop.mtcoding.blog.model.User;
@@ -25,6 +30,13 @@ public class BoardController {
     private BoardService boardService;
     @Autowired
     private BoardRepository boardRepository;
+
+    private void mockSession() {
+        User user = new User();
+        user.setId(1);
+        user.setUsername("ssar");
+        session.setAttribute("principal", user);
+    }
 
     @GetMapping({ "/", "/board" })
     public String main(Model model) {
@@ -59,6 +71,7 @@ public class BoardController {
 
     @PostMapping("/board")
     public String save(BoardSaveReqDto boardSaveReqDto) {
+        // mockSession();//인증
         // 인증
         User principal = (User) session.getAttribute("principal");
         if (principal == null) {
@@ -78,5 +91,27 @@ public class BoardController {
         boardService.글쓰기(boardSaveReqDto, principal.getId());
 
         return "redirect:/";
+    }
+
+    @DeleteMapping("/board/{id}")
+    public @ResponseBody ResponseEntity<?> delete(@PathVariable int id) {
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            // throw new CustomException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
+            // 자바 스크립트 응답을 하면 안되고 데이터로 응답해야함 !!
+            throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
+
+        }
+        // 권한 검사는 DB를 열어봐야하기 때문에 서비스에서 함.
+        boardService.게시글삭제(id);
+
+        // form태그는 수행이 완료했을 때 page를 돌려주고 다시그리게도미
+        // get 요청하면 거기에 대한 page를 만들어내서 서버사이드 랜더링을함.
+
+        // return "redirect:/";
+        // 자바스크립트 ajax로 삭제할거니까 ok만 받고, json으로 받음!!!!
+        // return "ok"; // 응답의 dto 도 만들어줘야함 (1 , -1) 로 응답할 것 . // 클라이언트 사이드 랜더링. 모델에 담을
+        // 땐 안쓴다
+        return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
     }
 }

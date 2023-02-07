@@ -35,4 +35,9 @@ public class BoardService {
     // // 두 개를 리턴하지 못하기 때문.
     // return boardRepository.findAllWithUser();
     // }
+
+    @Transactional
+    public void 게시글삭제(int id) {
+
+    }
 }
