@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
 import shop.mtcoding.blog.model.User;
 
@@ -37,6 +38,29 @@ public class BoardControllerTest {
 
     @Autowired
     private ObjectMapper om;
+
+    @Test
+    public void datail_test() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                get("/board/4"));
+
+        Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
+        BoardDetailRespDto dto = (BoardDetailRespDto) map.get("dto");
+
+        String model = om.writeValueAsString(dto);
+        System.out.println("테스트 : " + model);
+
+        // then
+        resultActions.andExpect(status().isOk());
+        assertThat(dto.getId()).isEqualTo(4);
+        assertThat(dto.getUsername()).isEqualTo("love");
+        assertThat(dto.getTitle()).isEqualTo("4번째 제목");
+        assertThat(dto.getContent()).isEqualTo("4번째 내용");
+        assertThat(dto.getUserId()).isEqualTo(2);
+    }
 
     @Test
     public void main_test() throws Exception {
@@ -57,7 +81,7 @@ public class BoardControllerTest {
         assertThat(dtos.size()).isEqualTo(6);
         assertThat(dtos.get(0).getUsername()).isEqualTo("ssar");
         assertThat(dtos.get(0).getTitle()).isEqualTo("1번째 제목");
-        
+
     }
 
     @BeforeEach // Test메서드 실행 직전마다 호출된다
