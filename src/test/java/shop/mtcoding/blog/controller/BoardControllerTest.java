@@ -1,10 +1,14 @@
 package shop.mtcoding.blog.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +21,9 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
 import shop.mtcoding.blog.model.User;
 
 @AutoConfigureMockMvc
@@ -27,6 +34,31 @@ public class BoardControllerTest {
     private MockMvc mvc;
 
     private MockHttpSession mockSession;
+
+    @Autowired
+    private ObjectMapper om;
+
+    @Test
+    public void main_test() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                get("/"));
+
+        Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
+        List<BoardMainRespDto> dtos = (List<BoardMainRespDto>) map.get("dtos");
+
+        String model = om.writeValueAsString(dtos);
+        System.out.println("테스트 : " + model);
+
+        // then
+        resultActions.andExpect(status().isOk());
+        assertThat(dtos.size()).isEqualTo(6);
+        assertThat(dtos.get(0).getUsername()).isEqualTo("ssar");
+        assertThat(dtos.get(0).getTitle()).isEqualTo("1번째 제목");
+        
+    }
 
     @BeforeEach // Test메서드 실행 직전마다 호출된다
     public void setUp() {
@@ -60,5 +92,6 @@ public class BoardControllerTest {
 
         // then
         resultActions.andExpect(status().is3xxRedirection());
+
     }
 }
