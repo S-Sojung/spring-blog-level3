@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.blog.model.User;
 
@@ -24,6 +25,7 @@ import shop.mtcoding.blog.model.User;
  * WebEnvironment.MOCK : 가짜 환경에 IoC컨테이너가 있는 것 => 그래서 서버 실행중에도 사용이 가능하다 
  * AutoConfigureMockMvc는 mock 환경의 IoC컨테이너에 MockMvc Bean이 생성된다. 
  */
+@Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 public class UserControllerTest {

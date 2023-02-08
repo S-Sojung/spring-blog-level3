@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,6 +31,12 @@ import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
 import shop.mtcoding.blog.model.User;
 
+//서비스에 붙은 트랜잭션은 메서드가 종료 되었을 때 커밋, 실행하다 오류터지면 롤백 
+//@Transactional(rollbackFor = CustomException.class) 특정 경우에만 롤백 시킬 수도 있다. 기본은 RuntimeException 
+
+//test에 하는 트랜잭션은 테스트 격리 시 사용함. 메서드 실행 직후 롤백 
+//단, auto_increment 초기화가 안됨 
+@Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 public class BoardControllerTest {
