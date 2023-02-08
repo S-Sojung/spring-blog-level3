@@ -56,20 +56,22 @@ public class BoardService {
         }
     }
 
-    public void 게시글수정(int id, BoardUpdateReqDto boardUpdateReqDto, int userId) {
+    // (AOP 관점지향 프로그래밍) - 핵심 로직을 제외한 걸 코드에서 제외해서 어노테이션으로 적음
+    public void 게시글수정(int id, BoardUpdateReqDto boardUpdateReqDto, int pricipalId) {
         Board boardPS = boardRepository.findById(id);
+        // 부가적인 로직
         if (boardPS == null) {
-            throw new CustomApiException("없는 게시글을 수정할 수 없습니다."); // bad request
+            throw new CustomApiException("해당 게시글을 찾을 수 없습니다."); // bad request
         }
-        if (boardPS.getUserId() != userId) {
+        if (boardPS.getUserId() != pricipalId) {
             throw new CustomApiException("해당 게시글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
 
-        try {
+        try {// 핵심 로직
             boardRepository.updateById(id, boardUpdateReqDto.getTitle(), boardUpdateReqDto.getContent());
             // 내가 try catch로 제어하고 싶으면 이걸 다시 try catch로 묶어주는 것
         } catch (Exception e) {
-            throw new CustomApiException("서버가 일시적인 문제가 생겼습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomApiException("게시글 수정에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
             // 로그를 남겨야함 (DB or File) -> 서버쪽 심각한 오류가 생긴거니까 꼭 수정해줘야함.
             // 이 로그에는 e.getMassage() 와 시간, 유저 정보들을 넘겨줘야함 .(새로운 Exception... 을 만들면됨 )
         }

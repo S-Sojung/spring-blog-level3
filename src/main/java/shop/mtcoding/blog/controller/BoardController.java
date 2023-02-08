@@ -1,10 +1,17 @@
 package shop.mtcoding.blog.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.blog.dto.ResponseDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
@@ -91,14 +101,18 @@ public class BoardController {
         return "board/updateForm";
     }
 
-    @PutMapping("/board/{id}") // 인증과 권한이 필요함
-    public @ResponseBody ResponseEntity<?> update(@PathVariable int id, BoardUpdateReqDto boardUpdateReqDto) {
+    @PutMapping("/board/{id}") // 인증과 권한이 필요함 //기본 파싱 전략이 x-www-form-urlencoded 이기 때문에 json으로 바꿔줘야함,
+                               // @RequestBody를 사용해서 알아서 파싱해준다.
+    public @ResponseBody ResponseEntity<?> update(@PathVariable int id,
+            @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
         // 인증
         User principal = (User) session.getAttribute("principal");
         if (principal == null) {
             throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
         }
         // 유효성검사
+        // System.out.println("테스트 : " + boardUpdateReqDto.getTitle());
+        // System.out.println("테스트 : " + boardUpdateReqDto.getContent());
 
         if (boardUpdateReqDto.getTitle() == null ||
                 boardUpdateReqDto.getTitle().isEmpty()) {
@@ -115,8 +129,7 @@ public class BoardController {
         // 서비스에서 권한 체크
         boardService.게시글수정(id, boardUpdateReqDto, principal.getId());
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "수정 성공", null), HttpStatus.OK);
-
+        return new ResponseEntity<>(new ResponseDto<>(1, "게시글 수정 성공", null), HttpStatus.CREATED);
         // return "redirect:/board/" + id;
     }
 

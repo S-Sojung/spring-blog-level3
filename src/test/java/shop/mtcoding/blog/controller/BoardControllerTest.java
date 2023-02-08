@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.mtcoding.blog.dto.board.BoardReq.BoardUpdateReqDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
 import shop.mtcoding.blog.model.User;
@@ -52,22 +53,28 @@ public class BoardControllerTest {
     @Test
     public void update_test() throws Exception {
         // given
-        int id = 8;
-        String requestBody = "title=수정된 제목입니다&content=수정된 내용입니다";
+        int id = 1;
+        // String requestBody = "title=수정된 제목입니다&content=수정된 내용입니다";
+        BoardUpdateReqDto boardUpdateReqDto = new BoardUpdateReqDto();
+        boardUpdateReqDto.setTitle("수정된제목");
+        boardUpdateReqDto.setContent("수정된내용");
+
+        String requestBody = om.writeValueAsString(boardUpdateReqDto);
+        // System.out.println("테스트 : "+requestBody);
 
         // when
         ResultActions resultActions = mvc.perform(
                 put("/board/" + id)
                         .content(requestBody)
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .session(mockSession)); // session이 주입된 채로 요청
 
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.print("테스트: " + responseBody);
 
         // then
-        // resultActions.andExpect(jsonPath("$.msg").value("수정 성공"));
-        // resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.msg").value("게시글 수정 성공"));
+        resultActions.andExpect(status().isCreated());
     }
 
     @Test
@@ -158,7 +165,7 @@ public class BoardControllerTest {
     public void save_test() throws Exception {
         // given
         String title = "";
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 99; i++) {
             title += "가";
         }
         String requestBody = "title=" + title + ".&content=내용1입니다.";
