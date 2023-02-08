@@ -10,6 +10,7 @@ CREATE TABLE board_tb(
     id int auto_increment primary key,
     title varchar(100) not null, --byte가 아니라 문자열의 길이.
     content longtext not null,
+    thumbnail longtext not null,
     user_id int not null,
     created_at timestamp not null
 );
