@@ -41,6 +41,18 @@ public class HtmlParseTest {
     }
 
     @Test
+    public void jsoup_test3() throws Exception {
+        Document doc = Jsoup.connect("https://comic.naver.com/webtoon/weekdayList?week=wed").get();
+        System.out.println(doc.title());
+
+        Elements tag = doc.select("img");
+        for (Element element : tag) {
+            String attr = element.attr("src");
+            System.out.println(attr);
+        }
+    }
+
+    @Test
     public void parse_test1() {
         // given
         String html = "<p>1</p><p><script src=\"\"></script><img id=\"img1\" src=\"data:image/png;base64,iVBORw0KG\"></p><p><b>1</b></p>";

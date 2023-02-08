@@ -1,5 +1,9 @@
 package shop.mtcoding.blog.service;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,7 @@ import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.Board;
 import shop.mtcoding.blog.model.BoardRepository;
+import shop.mtcoding.blog.util.Parse;
 
 @Transactional(readOnly = true) // 여기 붙이면 모든 메서드에 다 붙음
 @Service
@@ -22,7 +27,11 @@ public class BoardService {
     @Transactional // where절에 들어갈 id는 앞에 넣는게 좋다 (이건 where절에 들어가는건 아니니까 마음대로)
     public void 글쓰기(BoardSaveReqDto boardSaveReqDto, int userId) {
 
-        int result = boardRepository.insert(boardSaveReqDto.getTitle(), boardSaveReqDto.getContent(), userId);
+        // content내용을 Document로 받고, img 찾아내서 0번지 src를 찾아넣어줌
+        String thumbnail = Parse.thumbnailPasing(boardSaveReqDto.getContent());
+
+        int result = boardRepository.insert(boardSaveReqDto.getTitle(), boardSaveReqDto.getContent(), thumbnail,
+                userId);
 
         if (result != 1) {
             throw new CustomException("글쓰기 실패", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,8 +76,10 @@ public class BoardService {
             throw new CustomApiException("해당 게시글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
 
+        String thumbnail = Parse.thumbnailPasing(boardUpdateReqDto.getContent());
+
         try {// 핵심 로직
-            boardRepository.updateById(id, boardUpdateReqDto.getTitle(), boardUpdateReqDto.getContent());
+            boardRepository.updateById(id, boardUpdateReqDto.getTitle(), boardUpdateReqDto.getContent(), thumbnail);
             // 내가 try catch로 제어하고 싶으면 이걸 다시 try catch로 묶어주는 것
         } catch (Exception e) {
             throw new CustomApiException("게시글 수정에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);

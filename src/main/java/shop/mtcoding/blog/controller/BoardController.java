@@ -3,6 +3,7 @@ package shop.mtcoding.blog.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -134,7 +135,38 @@ public class BoardController {
     }
 
     @PostMapping("/board")
-    public String save(BoardSaveReqDto boardSaveReqDto) {
+    public String save(HttpServletRequest request) {
+        BoardSaveReqDto boardSaveReqDto = new BoardSaveReqDto();
+
+        try {
+            BufferedReader br = request.getReader();
+            String data = "";
+            String decodeData = "";
+            while (true) {
+                String input = br.readLine();
+                if (input == null)
+                    break;
+                data += input;
+            }
+
+            try {
+                decodeData = URLDecoder.decode(data, "UTF-8");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String temp[] = decodeData.split("&");
+            boardSaveReqDto.setTitle(temp[0].split("=")[1]);
+            boardSaveReqDto.setContent(temp[1].substring(temp[1].indexOf("=") + 1));
+            System.out.print(boardSaveReqDto.getContent());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // String title = request.getParameter("title");
+        // String content = request.getParameter("content");
+
         // mockSession();//인증
         // 인증
         User principal = (User) session.getAttribute("principal");
@@ -142,6 +174,9 @@ public class BoardController {
             throw new CustomException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
         }
         // 유효성 검사 : 길이 검사도 해야한다
+        // System.out.println("테스트 : " + boardSaveReqDto.getTitle());
+        // System.out.println("테스트 : " + boardSaveReqDto.getContent().substring(0, 20));
+
         if (boardSaveReqDto.getTitle() == null || boardSaveReqDto.getTitle().isEmpty()) {
             throw new CustomException("title 작성해주세요");
         }
