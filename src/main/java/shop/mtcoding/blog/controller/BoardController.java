@@ -135,62 +135,88 @@ public class BoardController {
     }
 
     @PostMapping("/board")
-    public String save(HttpServletRequest request) {
-        BoardSaveReqDto boardSaveReqDto = new BoardSaveReqDto();
-
-        try {
-            BufferedReader br = request.getReader();
-            String data = "";
-            String decodeData = "";
-            while (true) {
-                String input = br.readLine();
-                if (input == null)
-                    break;
-                data += input;
-            }
-
-            try {
-                decodeData = URLDecoder.decode(data, "UTF-8");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            String temp[] = decodeData.split("&");
-            boardSaveReqDto.setTitle(temp[0].split("=")[1]);
-            boardSaveReqDto.setContent(temp[1].substring(temp[1].indexOf("=") + 1));
-            System.out.print(boardSaveReqDto.getContent());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // String title = request.getParameter("title");
-        // String content = request.getParameter("content");
-
-        // mockSession();//인증
+    public @ResponseBody ResponseEntity<?> save(
+            @RequestBody BoardSaveReqDto boardSaveReqDto) {
         // 인증
         User principal = (User) session.getAttribute("principal");
         if (principal == null) {
-            throw new CustomException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
+            throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
         }
-        // 유효성 검사 : 길이 검사도 해야한다
-        // System.out.println("테스트 : " + boardSaveReqDto.getTitle());
-        // System.out.println("테스트 : " + boardSaveReqDto.getContent().substring(0, 20));
-
         if (boardSaveReqDto.getTitle() == null || boardSaveReqDto.getTitle().isEmpty()) {
-            throw new CustomException("title 작성해주세요");
+            throw new CustomApiException("title 작성해주세요");
         }
         if (boardSaveReqDto.getContent() == null || boardSaveReqDto.getContent().isEmpty()) {
-            throw new CustomException("content 작성해주세요");
+            throw new CustomApiException("content 작성해주세요");
         }
         if (boardSaveReqDto.getTitle().length() > 100) {
-            throw new CustomException("title의 길이가 100자 이하여야 합니다");
+            throw new CustomApiException("title의 길이가 100자 이하여야 합니다");
         }
 
         boardService.글쓰기(boardSaveReqDto, principal.getId());
 
-        return "redirect:/";
+        return new ResponseEntity<>(new ResponseDto<>(1, "게시글 작성 성공", null), HttpStatus.CREATED);
     }
+
+    // @PostMapping("/board")
+    // public String save(HttpServletRequest request) {
+    // BoardSaveReqDto boardSaveReqDto = new BoardSaveReqDto();
+
+    // try {
+    // BufferedReader br = request.getReader();
+    // String data = "";
+    // String decodeData = "";
+    // while (true) {
+    // String input = br.readLine();
+    // if (input == null)
+    // break;
+    // data += input;
+    // }
+
+    // try {
+    // decodeData = URLDecoder.decode(data, "UTF-8");
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+
+    // String temp[] = decodeData.split("&");
+    // boardSaveReqDto.setTitle(temp[0].split("=")[1]);
+    // boardSaveReqDto.setContent(temp[1].substring(temp[1].indexOf("=") + 1));
+    // System.out.print(boardSaveReqDto.getContent());
+
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+
+    // // String title = request.getParameter("title");
+    // // String content = request.getParameter("content");
+
+    // // mockSession();//인증
+    // // 인증
+    // User principal = (User) session.getAttribute("principal");
+    // if (principal == null) {
+    // throw new CustomException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
+    // }
+    // // 유효성 검사 : 길이 검사도 해야한다
+    // // System.out.println("테스트 : " + boardSaveReqDto.getTitle());
+    // // System.out.println("테스트 : " + boardSaveReqDto.getContent().substring(0,
+    // 20));
+
+    // if (boardSaveReqDto.getTitle() == null ||
+    // boardSaveReqDto.getTitle().isEmpty()) {
+    // throw new CustomException("title 작성해주세요");
+    // }
+    // if (boardSaveReqDto.getContent() == null ||
+    // boardSaveReqDto.getContent().isEmpty()) {
+    // throw new CustomException("content 작성해주세요");
+    // }
+    // if (boardSaveReqDto.getTitle().length() > 100) {
+    // throw new CustomException("title의 길이가 100자 이하여야 합니다");
+    // }
+
+    // boardService.글쓰기(boardSaveReqDto, principal.getId());
+
+    // return "redirect:/";
+    // }
 
     @DeleteMapping("/board/{id}")
     public @ResponseBody ResponseEntity<?> delete(@PathVariable int id) {
