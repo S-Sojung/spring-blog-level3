@@ -37,7 +37,7 @@ public class UserControllerTest {
     public void join_test() throws Exception {
         System.out.print("테스트 : join_test()");
         // given
-        String requestBody = "username=ssar&password=1234&email=ssar@nate.com";
+        String requestBody = "username=cos&password=1234&email=ssar@nate.com";
 
         // when
         ResultActions resultActions = mvc.perform(post("/join").content(requestBody)

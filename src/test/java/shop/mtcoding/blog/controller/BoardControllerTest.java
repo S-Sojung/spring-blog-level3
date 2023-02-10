@@ -164,21 +164,29 @@ public class BoardControllerTest {
     @Test
     public void save_test() throws Exception {
         // given
-        String title = "";
-        for (int i = 0; i < 99; i++) {
-            title += "가";
-        }
-        String requestBody = "title=" + title + ".&content=내용1입니다.";
+        // String title = "";
+        // for (int i = 0; i < 99; i++) {
+        // title += "가";
+        // }
+        // String requestBody = "title=" + title + ".&content=내용1입니다.";
+
+        BoardUpdateReqDto boardUpdateReqDto = new BoardUpdateReqDto();
+        boardUpdateReqDto.setTitle("수정된제목");
+        boardUpdateReqDto.setContent("수정된내용");
+
+        String requestBody = om.writeValueAsString(boardUpdateReqDto);
 
         // when
         ResultActions resultActions = mvc.perform(
                 post("/board")
                         .content(requestBody)
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .session(mockSession)); // session이 주입된 채로 요청
 
         // then
-        resultActions.andExpect(status().is3xxRedirection());
+        // resultActions.andExpect(status().is3xxRedirection());
+        resultActions.andExpect(jsonPath("$.msg").value("게시글 작성 성공"));
+        resultActions.andExpect(status().isCreated());
 
     }
 }
