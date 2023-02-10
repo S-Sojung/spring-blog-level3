@@ -116,13 +116,14 @@ public class BoardControllerTest {
         String boardJson = om.writeValueAsString(boardDto);
         String replyListJson = om.writeValueAsString(replyDtos);
         System.out.println("테스트 : " + boardJson);
+        System.out.println("테스트 : " + replyListJson);
 
         // then
         resultActions.andExpect(status().isOk());
         assertThat(boardDto.getUsername()).isEqualTo("ssar");
         assertThat(boardDto.getUserId()).isEqualTo(1);
         assertThat(boardDto.getTitle()).isEqualTo("1번째 제목");
-        assertThat(replyDtos.get(1).getComment()).isEqualTo("댓글3");
+        assertThat(replyDtos.get(1).getComment()).isEqualTo("댓글3이에용");
         assertThat(replyDtos.get(1).getUsername()).isEqualTo("love");
     }
 

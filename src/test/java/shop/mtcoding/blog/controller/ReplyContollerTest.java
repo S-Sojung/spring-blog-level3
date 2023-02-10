@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,5 +66,21 @@ public class ReplyContollerTest {
                         .session(mockSession)); // session이 주입된 채로 요청
 
         resultActions.andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void delete_test() throws Exception {
+        // given
+        int id = 0;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                delete("/reply/" + id).session(mockSession)); // session이 주입된 채로 요청
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.print("테스트: " + responseBody);
+
+        // then
+        // resultActions.andExpect(jsonPath("$.msg").value("삭제성공"));
+        // resultActions.andExpect(status().isOk());
     }
 }
