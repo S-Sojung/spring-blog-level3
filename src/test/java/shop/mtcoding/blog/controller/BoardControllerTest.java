@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardUpdateReqDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
+import shop.mtcoding.blog.dto.reply.ReplyResp.ReplyDetailRespDto;
 import shop.mtcoding.blog.model.User;
 
 //서비스에 붙은 트랜잭션은 메서드가 종료 되었을 때 커밋, 실행하다 오류터지면 롤백 
@@ -102,27 +103,27 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void datail_test() throws Exception {
+    public void detail_test() throws Exception {
         // given
-        int id = 4;
+        int id = 1;
 
         // when
         ResultActions resultActions = mvc.perform(
                 get("/board/" + id));
-
         Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
-        BoardDetailRespDto dto = (BoardDetailRespDto) map.get("dto");
-
-        String model = om.writeValueAsString(dto);
-        System.out.println("테스트 : " + model);
+        BoardDetailRespDto boardDto = (BoardDetailRespDto) map.get("boardDto");
+        List<ReplyDetailRespDto> replyDtos = (List<ReplyDetailRespDto>) map.get("replyDtos");
+        String boardJson = om.writeValueAsString(boardDto);
+        String replyListJson = om.writeValueAsString(replyDtos);
+        System.out.println("테스트 : " + boardJson);
 
         // then
         resultActions.andExpect(status().isOk());
-        assertThat(dto.getId()).isEqualTo(4);
-        assertThat(dto.getUsername()).isEqualTo("love");
-        assertThat(dto.getTitle()).isEqualTo("4번째 제목");
-        assertThat(dto.getContent()).isEqualTo("4번째 내용");
-        assertThat(dto.getUserId()).isEqualTo(2);
+        assertThat(boardDto.getUsername()).isEqualTo("ssar");
+        assertThat(boardDto.getUserId()).isEqualTo(1);
+        assertThat(boardDto.getTitle()).isEqualTo("1번째 제목");
+        assertThat(replyDtos.get(1).getComment()).isEqualTo("댓글3");
+        assertThat(replyDtos.get(1).getUsername()).isEqualTo("love");
     }
 
     @Test
