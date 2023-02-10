@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import shop.mtcoding.blog.dto.reply.ReplyReq.ReplySaveReqDto;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.User;
+import shop.mtcoding.blog.service.ReplyService;
 
 @Controller
 public class ReplyController {
 
     @Autowired
-    HttpSession session;
+    private HttpSession session;
+    @Autowired
+    private ReplyService replyService;
 
     // reply 안에 where 에 들어가지 않음 .. id를 작성 안해도 된다.
     // 하지만 id번호의 board에 reply 작성하겠다.. 라는 의미를 넣을 수 있다.
@@ -41,6 +44,7 @@ public class ReplyController {
             throw new CustomException("100자 이내로 작성해주세요");
         }
 
+        replyService.댓글쓰기(replySaveReqDto, principal.getId());
         return "redirect:/board/" + replySaveReqDto.getBoardId();
     }
 

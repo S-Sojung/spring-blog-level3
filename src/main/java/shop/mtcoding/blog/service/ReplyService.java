@@ -20,6 +20,7 @@ public class ReplyService {
     public void 댓글쓰기(ReplySaveReqDto replySaveReqDto, int principalId) {
 
         // content내용을 Document로 받고, img 찾아내서 0번지 src를 찾아넣어줌
+        System.out.println(replySaveReqDto.getComment() + " " + replySaveReqDto.getBoardId());
         int result = replyRepository.insert(replySaveReqDto.getComment(), replySaveReqDto.getBoardId(), principalId);
 
         if (result != 1) {
