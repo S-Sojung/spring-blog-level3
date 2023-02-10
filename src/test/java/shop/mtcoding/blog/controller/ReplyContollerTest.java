@@ -71,7 +71,7 @@ public class ReplyContollerTest {
     @Test
     public void delete_test() throws Exception {
         // given
-        int id = 0;
+        int id = 1;
 
         // when
         ResultActions resultActions = mvc.perform(

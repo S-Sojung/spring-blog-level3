@@ -34,10 +34,10 @@ public class ReplyService {
     public void 댓글삭제(int id, int principalId) {
         Reply replyPS = replyRepository.findById(id);
         if (replyPS == null) {
-            throw new CustomApiException("없는 게시글을 삭제할 수 없습니다."); // bad request
+            throw new CustomApiException("없는 댓글을 삭제할 수 없습니다."); // bad request
         }
         if (replyPS.getUserId() != principalId) {
-            throw new CustomApiException("해당 게시글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+            throw new CustomApiException("해당 댓글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
 
         try {
