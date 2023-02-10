@@ -1,18 +1,10 @@
 package shop.mtcoding.blog.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URLDecoder;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.blog.dto.ResponseDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
@@ -44,13 +34,6 @@ public class BoardController {
     private BoardService boardService;
     @Autowired
     private BoardRepository boardRepository;
-
-    private void mockSession() {
-        User user = new User();
-        user.setId(1);
-        user.setUsername("ssar");
-        session.setAttribute("principal", user);
-    }
 
     @GetMapping({ "/", "/board" })
     public String main(Model model) {
@@ -187,10 +170,6 @@ public class BoardController {
     // e.printStackTrace();
     // }
 
-    // // String title = request.getParameter("title");
-    // // String content = request.getParameter("content");
-
-    // // mockSession();//인증
     // // 인증
     // User principal = (User) session.getAttribute("principal");
     // if (principal == null) {
