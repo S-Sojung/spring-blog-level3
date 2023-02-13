@@ -55,14 +55,15 @@ public class ReplyController {
     }
 
     @DeleteMapping("/reply/{id}")
-    public @ResponseBody ResponseEntity<?> delete(@PathVariable int id) {
+    // 기본 응답은 200 이기 때문에 ResponstDto 사용 가능
+    public @ResponseBody ResponseEntity<?> deleteReply(@PathVariable int id) {
         User principal = (User) session.getAttribute("principal");
         if (principal == null) {
             throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
-
         }
+        // 권한 처리는 서비스에서 : db를 조회해야 가능하기 때문
         replyService.댓글삭제(id, principal.getId());
-
-        return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
+        // return ResponseEntity.ok("삭제성공");
+        return new ResponseEntity<>(new ResponseDto<>(1, "댓글삭제성공", null), HttpStatus.OK);
     }
 }

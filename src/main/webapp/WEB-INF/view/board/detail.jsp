@@ -52,7 +52,7 @@
                     <li id="reply-${reply.id}" class="list-group-item d-flex justify-content-between">
                         <div>${reply.comment}</div>
                         <div class="d-flex">
-                            <div class="font-italic">작성자 : ${reply.username} &nbsp;</div>
+                            <div class="font-italic">작성자 : ${reply.username} &nbsp;</div>  
                             <c:if test="${principal.id==reply.userId}" >
                             <button onClick="deleteByReplyId(${reply.id})" class="badge bg-secondary">삭제</button>
                             </c:if>
@@ -73,6 +73,7 @@
                 })
                     .done(res => { //20X 일때
                         alert(res.msg);
+                        //location.reload();
                         $("#reply-"+id).remove();
                     })
                     .fail(err => { //40X , 50X 일때

@@ -80,7 +80,7 @@ public class ReplyContollerTest {
         System.out.print("테스트: " + responseBody);
 
         // then
-        // resultActions.andExpect(jsonPath("$.msg").value("삭제성공"));
-        // resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.msg").value("댓글삭제성공"));
+        resultActions.andExpect(status().isOk());
     }
 }
