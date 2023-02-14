@@ -1,18 +1,15 @@
 package shop.mtcoding.blog.service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import shop.mtcoding.blog.dto.user.UserReq.JoinReqDto;
 import shop.mtcoding.blog.dto.user.UserReq.LoginReqDto;
+import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.model.UserRepository;
@@ -98,6 +95,23 @@ public class UserService {
         // 세션 값은 컨트롤러에서 바꿔줌
         // User user = userRepository.findById(userPS.getId());
         // session.setAttribute("principal", user);
+        return userPS;
+    }
+
+    @Transactional
+    public User 프로필사진아작스수정(MultipartFile profile, int principalId) {
+
+        String uuidImageName = PathUtil.writeImageFile(profile);
+
+        // 2. 저장된 파일의 경로를 DB에 저장
+        User userPS = userRepository.findById(principalId);
+        userPS.setProfile(uuidImageName);
+
+        int result = userRepository.updateById(principalId, userPS.getUsername(), userPS.getPassword(),
+                userPS.getEmail(), userPS.getProfile(), userPS.getCreatedAt());
+        if (result != 1) {
+            throw new CustomApiException("프로필 업로드 실패");
+        }
         return userPS;
     }
 }

@@ -57,30 +57,34 @@
                     <!--input type 이 file이면 버튼이 생긴다. 파일을 넣을때는 enctype 을 multipart/form-data가 되어야한다
                         이때 enctype의 디폴트는 x-www-form-urlencoded 타입이다. this를 넣을 시 자기자신 객체를 얘기한다 -->
                 </div>
+                <button type="button" class="btn btn-primary" onClick="updateImage()">아작스 사진 변경</button>
                 <button type="submit" class="btn btn-primary">사진 변경</button>
             </form>
         </div>
         <script>
         //ajax
             function updateImage(){
-                console.log( $("#profileForm"));
+                // console.log( $("#profileForm"));
                 let profileForm = $("#profileForm")[0];
                 let formData = new FormData(profileForm); //자바 스크립트로 폼 태그 정보를 다 들고온다. 
+                console.log( formData);
 
                 $.ajax({
                     type: "put",
                     url: "/user/profileUpdate",
                     data: formData,
                     contentType : false, // 필수 ,x-www-form-urlencoded로 파싱 되는 것을 방지하는 프로토콜
-                    prosessData : false, // 필수 , contentType을 false로 줬을 때 QueryString이 자동 설정됨. 이를 해제 
-                    enctype : "multipart/form-data", 
+                    processData : false, // 필수 , contentType을 false로 줬을 때 QueryString이 자동 설정됨. 이를 해제 
+                    enctype : "multipart/form-data",
+                    dataType : "text"
                     //contentType이 아니라 이걸로 보냄 (put 요청이기 때문에 body 데이터 확인하고 contentType 확인하러감)
-                    dataType: "json" 
                 })
                 .done(res => { 
+                    console.log(res);
                     alert(res.msg);
                     location.href ="/";
                 }).fail((err)=>{
+                    console.log(err);
                     alert(err.responseJSON.msg);
                 });
             }
