@@ -1,20 +1,30 @@
 package shop.mtcoding.blog.service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import shop.mtcoding.blog.dto.user.UserReq.JoinReqDto;
 import shop.mtcoding.blog.dto.user.UserReq.LoginReqDto;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.model.UserRepository;
+import shop.mtcoding.blog.util.PathUtil;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private HttpSession session;
 
     @Transactional
     public void 회원가입(JoinReqDto joinReqDto) {
@@ -57,4 +67,37 @@ public class UserService {
         return principal;
     }
 
+    @Transactional
+    public User 프로필사진수정(MultipartFile profile, int principalId) {
+
+        // Path imageFilePath = PathUtil.getImagePath(profile.getOriginalFilename());
+
+        // try {
+        // // nio, 경로는 path 타입, 프로필은 바이트 타입
+        // Files.write(imageFilePath, profile.getBytes());
+        // } catch (Exception e) {
+        // throw new CustomException("사진을 웹서버에 저장하지 못하엿습니다.",
+        // HttpStatus.INTERNAL_SERVER_ERROR);
+        // }
+
+        // String path = imageFilePath.toString();
+
+        // 1. 사진을 /static/images에 UUID로 변경해서 하드디스크에 저장하고, 그 이름을 변수로 저장해줌
+        String uuidImageName = PathUtil.writeImageFile(profile);
+
+        // 업데이트 문을 사용할 때는 무조건 전체 변경을 하는 것이 좋다.
+        // 2. 저장된 파일의 경로를 DB에 저장
+        User userPS = userRepository.findById(principalId);
+        userPS.setProfile(uuidImageName);
+
+        int result = userRepository.updateById(principalId, userPS.getUsername(), userPS.getPassword(),
+                userPS.getEmail(), userPS.getProfile(), userPS.getCreatedAt());
+        if (result != 1) {
+            throw new CustomException("프로필 업로드 실패");
+        }
+        // 세션 값은 컨트롤러에서 바꿔줌
+        // User user = userRepository.findById(userPS.getId());
+        // session.setAttribute("principal", user);
+        return userPS;
+    }
 }

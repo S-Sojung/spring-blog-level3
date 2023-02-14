@@ -57,9 +57,12 @@
                         </ul>
 
                         <div>
-                            <a href="/user/profileUpdate">
-                                <img src="/images/profile.jpg" style="width: 40px;" class="rounded-circle"
+                            <a href="/user/profileUpdateForm">
+                            <!--값을 리턴하는 애들이라 expression. if는 리턴하는 애들은 아님 
+                                값을 리턴하는 식! 표현"식" !! (리턴해주는 !!!)-->
+                                <img src="${principal.profile==null ? '/images/profile.jpg' : principal.profile}" style="width: 40px; height: 40px;" class="rounded-circle"
                                     alt="Cinque Terre">
+
                             </a>
                         </div>
                     </div>
