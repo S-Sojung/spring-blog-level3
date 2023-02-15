@@ -10,6 +10,7 @@ import shop.mtcoding.blog.dto.reply.ReplyReq.ReplySaveReqDto;
 import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.model.Reply;
 import shop.mtcoding.blog.model.ReplyRepository;
+import shop.mtcoding.blog.model.User;
 
 @Slf4j
 @Transactional(readOnly = true) // 여기 붙이면 모든 메서드에 다 붙음
@@ -34,14 +35,16 @@ public class ReplyService {
     }
 
     @Transactional
-    public void 댓글삭제(int id, int principalId) {
+    public void 댓글삭제(int id, User principal) {
         // AOP 부가적인 코드들을 자동화 시킬 수 있다.
         Reply replyPS = replyRepository.findById(id);
         if (replyPS == null) {
             throw new CustomApiException("댓글이 존재하지 않습니다.");
         }
-        if (replyPS.getUserId() != principalId) {
-            throw new CustomApiException("해당 댓글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        if (!principal.getRole().equals("ADMIN")) {
+            if (replyPS.getUserId() != principal.getId()) {
+                throw new CustomApiException("해당 댓글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+            }
         }
 
         try {

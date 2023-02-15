@@ -154,7 +154,7 @@ public class BoardController {
 
         }
         // 권한 검사는 DB를 열어봐야하기 때문에 서비스에서 함.
-        boardService.게시글삭제(id, principal.getId());
+        boardService.게시글삭제(id, principal);
 
         // form태그는 수행이 완료했을 때 page를 돌려주고 다시그리게도미
         // get 요청하면 거기에 대한 page를 만들어내서 서버사이드 랜더링을함.

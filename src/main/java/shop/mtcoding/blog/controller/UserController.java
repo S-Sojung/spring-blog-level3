@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -137,5 +139,17 @@ public class UserController {
         User userPS = userService.프로필사진아작스수정(profile, principal.getId());
         session.setAttribute("principal", userPS);
         return new ResponseEntity<>(new ResponseDto<>(1, "프로필 사진 수정 성공", null), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/user/{id}")
+    public @ResponseBody ResponseEntity<?> delete(@PathVariable int id) {
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
+        }
+        // 권한 검사는 DB를 열어봐야하기 때문에 서비스에서 함.
+        userService.유저삭제(id, principal);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
     }
 }

@@ -8,6 +8,13 @@
         select * from reply_tb
     </select>
 
+    <select id="findAllWithUser" resultType="shop.mtcoding.blog.dto.reply.ReplyResp$ReplyAllRespDto">
+        select rt.id, rt.comment, rt.user_id, ut.username, rt.board_id, rt.created_at
+        from reply_tb rt
+                 inner join user_tb ut
+                            on rt.user_id = ut.id;
+    </select>
+
     <select id="findById" resultType="shop.mtcoding.blog.model.Reply">
         select * from reply_tb where id = #{id}
     </select>    

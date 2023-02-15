@@ -62,7 +62,7 @@ public class ReplyController {
             throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
         }
         // 권한 처리는 서비스에서 : db를 조회해야 가능하기 때문
-        replyService.댓글삭제(id, principal.getId());
+        replyService.댓글삭제(id, principal);
         // return ResponseEntity.ok("삭제성공");
         return new ResponseEntity<>(new ResponseDto<>(1, "댓글삭제성공", null), HttpStatus.OK);
     }

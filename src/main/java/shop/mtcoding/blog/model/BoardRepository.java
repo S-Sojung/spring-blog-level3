@@ -5,26 +5,29 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import shop.mtcoding.blog.dto.board.BoardResp.BoardAllRespDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
 
 @Mapper
 public interface BoardRepository {
 
-    public List<Board> findAll();
+        public List<Board> findAll();
 
-    public List<BoardMainRespDto> findAllWithUser();
+        public List<BoardMainRespDto> findAllWithUser();
 
-    public Board findById(int id);
+        public List<BoardAllRespDto> findAllContentWithUser();
 
-    public BoardDetailRespDto findByIdWithUser(int id);
+        public Board findById(int id);
 
-    public int insert(@Param("title") String title, @Param("content") String content,
-            @Param("thumbnail") String thumnail, @Param("userId") int userId);
+        public BoardDetailRespDto findByIdWithUser(int id);
 
-    public int updateById(@Param("id") int id, @Param("title") String title,
-            @Param("content") String content, @Param("thumbnail") String thumnail);
+        public int insert(@Param("title") String title, @Param("content") String content,
+                        @Param("thumbnail") String thumbnail, @Param("userId") int userId);
 
-    // 필요시 Param으로 매핑
-    public int deleteById(int id);
+        public int updateById(@Param("id") int id, @Param("title") String title,
+                        @Param("content") String content, @Param("thumbnail") String thumbnail);
+
+        // 필요시 Param으로 매핑
+        public int deleteById(int id);
 }

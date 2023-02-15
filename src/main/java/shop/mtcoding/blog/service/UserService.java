@@ -3,6 +3,7 @@ package shop.mtcoding.blog.service;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -113,5 +114,23 @@ public class UserService {
             throw new CustomApiException("프로필 업로드 실패");
         }
         return userPS;
+    }
+
+    @Transactional
+    public void 유저삭제(int id, User principal) {
+        User userPS = userRepository.findById(id);
+        if (userPS == null) {
+            throw new CustomApiException("없는 사용자를 삭제할 수 없습니다."); // 401
+        }
+        if (!principal.getRole().equals("ADMIN")) {
+            if (principal.getId() != userPS.getId()) {
+                throw new CustomApiException("권한이 아닙니다.", HttpStatus.FORBIDDEN); // 401
+            }
+        }
+        try {
+            userRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CustomApiException("서버가 일시적인 문제가 생겼습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

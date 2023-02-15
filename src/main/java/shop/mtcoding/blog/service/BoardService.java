@@ -10,6 +10,7 @@ import shop.mtcoding.blog.dto.board.BoardReq.BoardUpdateReqDto;
 import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.model.Board;
 import shop.mtcoding.blog.model.BoardRepository;
+import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.util.HtmlParser;
 
 @Transactional(readOnly = true) // 여기 붙이면 모든 메서드에 다 붙음
@@ -41,13 +42,15 @@ public class BoardService {
     // }
 
     @Transactional // AOP ?
-    public void 게시글삭제(int id, int userId) {
+    public void 게시글삭제(int id, User principal) {
         Board boardPS = boardRepository.findById(id);
         if (boardPS == null) {
             throw new CustomApiException("없는 게시글을 삭제할 수 없습니다."); // bad request
         }
-        if (boardPS.getUserId() != userId) {
-            throw new CustomApiException("해당 게시글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        if (!principal.getRole().equals("ADMIN")) {
+            if (boardPS.getUserId() != principal.getId()) {
+                throw new CustomApiException("해당 게시글을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+            }
         }
 
         try {
