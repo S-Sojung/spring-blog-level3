@@ -9,7 +9,7 @@
                     <a href="javascript:void(0)" onclick="callFunction(this)" id="board" class="list-group-item list-group-item-action">게시글 관리</a>
                     <a href="javascript:void(0)" onclick="callFunction(this)" id="reply" class="list-group-item list-group-item-action">댓글 관리</a>
                 </div>
-                <div class="col" id="dataBox">
+                <div class="col" >
                     <table class="table">
                         <thead id="theadSet">
                             
@@ -77,7 +77,6 @@
                 .done(res => { //20X 일때
                     $(`#data-`+id).remove();  
                     alert(res.msg);
-                    $("#dataBox").load(location.href+' #dataBox');
                 })
                 .fail(err => { //40X , 50X 일때
                     alert(err.responseJSON.msg);
