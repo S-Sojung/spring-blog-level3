@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import shop.mtcoding.blog.dto.ResponseDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardUpdateReqDto;
+import shop.mtcoding.blog.dto.love.LoveResp.LoveCountRespDto;
 import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.Board;
 import shop.mtcoding.blog.model.BoardRepository;
+import shop.mtcoding.blog.model.Love;
+import shop.mtcoding.blog.model.LoveRepository;
 import shop.mtcoding.blog.model.ReplyRepository;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.service.BoardService;
@@ -37,6 +40,8 @@ public class BoardController {
     private BoardRepository boardRepository;
     @Autowired
     private ReplyRepository replyRepository;
+    @Autowired
+    private LoveRepository loveRepository;
 
     @GetMapping({ "/", "/board" })
     public String main(Model model) {
@@ -59,8 +64,28 @@ public class BoardController {
         if (boardPS == null) {
             throw new CustomException("없는 게시글에 접근 할 수 없습니다.", HttpStatus.UNAUTHORIZED); // 401
         }
+        User principal = (User) session.getAttribute("principal");
+
+        if (principal != null) {
+            Love love = loveRepository.findByUserIdAndBoardId(principal.getId(), id);
+            if (love == null) {
+                love = new Love();
+                love.setLove(" ");
+                love.setId(0);
+            }
+            model.addAttribute("mylove", love);
+        }
+
+        // LoveCountRespDto loves = loveRepository.findByBoardIdCount(id);
+        // if (loves == null) {
+        // loves = new LoveCountRespDto();
+        // loves.setCount(0);
+        // }
+        // System.out.println(loves.getCount());
+
         model.addAttribute("boardDto", boardRepository.findByIdWithUser(id));
         model.addAttribute("replyDtos", replyRepository.findByBoardIdWithUser(id));
+        // model.addAttribute("loves", loves.getCount());
         return "board/detail";
     }
 

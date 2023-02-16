@@ -15,4 +15,10 @@ INSERT INTO reply_tb(comment, user_id, board_id, created_at) values('댓글2이�
 INSERT INTO reply_tb(comment, user_id, board_id, created_at) values('댓글3이에용', 3, 2, now());
 INSERT INTO reply_tb(comment, user_id, board_id, created_at) values('댓글4이에용', 3, 3, now());
 
+INSERT INTO love_tb(love, user_id, board_id, created_at) values('fa-solid', 2, 3, now());
+INSERT INTO love_tb(love, user_id, board_id, created_at) values('fa-solid', 3, 3, now());
+INSERT INTO love_tb(love, user_id, board_id, created_at) values('fa-solid', 2, 4, now());
+INSERT INTO love_tb(love, user_id, board_id, created_at) values('fa-solid', 3, 4, now());
+INSERT INTO love_tb(love, user_id, board_id, created_at) values('fa-solid', 3, 5, now());
+
 commit;

@@ -26,3 +26,10 @@ CREATE TABLE reply_tb(
 );
 
 
+CREATE TABLE love_tb(
+    id int auto_increment primary key,
+    love varchar default 'fa-solid',
+    user_id int not null,
+    board_id int not null,
+    created_at timestamp not null
+);

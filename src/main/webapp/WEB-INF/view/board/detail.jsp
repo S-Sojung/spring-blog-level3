@@ -30,8 +30,9 @@
                 <div>${boardDto.content}</div>
             </div>
             <hr />
-            <i id="heart" class="fa-regular fa-heart fa-lg"></i>
-
+            <div>
+                <i id="heart" class="fa-regular ${mylove.love} fa-heart fa-lg" value="${mylove.id}" onClick="heartClick(${mylove.id})"></i>
+            </div>
 
             <div class="card mt-3">
                 <form action="/reply" method="post">
@@ -63,6 +64,54 @@
             </div>
         </div>
         <script>
+        //여기서 insert delete 하고 love controller 작성해주기
+                // $("#heart").click(() => { //하트가 클릭됐을때 색칠이 안되어있다면 insert
+                function heartClick(id){
+                    // console.log(id);
+                    if (!$("#heart").hasClass("fa-solid")) { //if id가 0
+                        let data={ 
+                            "love" : "fa-solid",
+                            "boardId": ${boardDto.id}
+                        };
+
+                        $.ajax({
+                            type: "post",
+                            url: "/love",
+                            data: JSON.stringify(data),
+                            contentType : "application/json; charset=utf-8",
+                            dataType: "json" 
+                        })
+                            .done(res => { 
+                                alert(res.msg);
+                                $("#heart").addClass("fa-solid");
+                                $("#heart").attr("value",res.data);
+                                $("#heart").attr("onClick","heartClick("+res.data+")");
+                            })
+                            .fail(err => { 
+                                alert(err.responseJSON.msg);
+                            });
+                        
+
+
+                    } else {//색칠이 되어있으면 delete 실행 
+                        $.ajax({
+                            type: "delete",
+                            url: "/love/" + id,
+                            dataType: "json"
+                        })
+                            .done(res => { 
+                                alert(res.msg);
+
+                                $("#heart").removeClass("fa-solid");
+                                $("#heart").attr("value",res.data);
+                                $("#heart").attr("onClick","heartClick("+res.data+")");
+                            })
+                            .fail(err => { 
+                                alert(err.responseJSON.msg);
+                            });
+                    }   
+                };
+
             function deleteByReplyId(id){
                 //$("#reply-"+id).remove(); ajax가 done 이 되었을때
                 //location.reload() 도 가능하지만 위가 더 낫다 .
