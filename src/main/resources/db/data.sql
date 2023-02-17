@@ -1,6 +1,7 @@
 INSERT INTO user_tb(username, password, email, role, created_at) values('admin', '1234', 'admin@nate.com','ADMIN', now());
 INSERT INTO user_tb(username, password, email, created_at) values('ssar', '1234', 'ssar@nate.com', now());
 INSERT INTO user_tb(username, password, email, created_at) values('love', '1234', 'love@nate.com', now());
+INSERT INTO user_tb(username, password, email, created_at) values('ssj', '1234', 'thwjddl119@naver.com', now());
 -- 나에 대한 상세한 정보는 웹 사이트를 이용하는 중간에 추가하던가함.
 
 INSERT INTO board_tb(title, content, thumbnail, user_id, created_at) values('1번째 제목', '1번째 내용', '/images/dora.png', 3, now());

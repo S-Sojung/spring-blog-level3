@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.ResponseDto;
+import shop.mtcoding.blog.dto.admin.AdminReq.AdminMailReq;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardAllRespDto;
 import shop.mtcoding.blog.dto.reply.ReplyResp.ReplyAllRespDto;
 import shop.mtcoding.blog.dto.user.UserReq.LoginReqDto;
@@ -43,11 +43,12 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/admin/mail")
-    public @ResponseBody ResponseEntity<?> sendMail(@RequestBody String email) {
-        String e = email.split(":")[1];
-        String e2 = e.substring(1, e.length() - 2);
-        // System.out.println("테스트 : " + e2);
-        adminService.mailSend(e2);
+    public @ResponseBody ResponseEntity<?> sendMail(@RequestBody AdminMailReq adminMailReq) {
+
+        // System.out.println("테스트 : " + adminMailReq.getEmail());
+        // System.out.println("테스트 : " + adminMailReq.getTitle());
+        // System.out.println("테스트 : " + adminMailReq.getMessage());
+        adminService.mailSend(adminMailReq);
         // System.out.println("테스트 : 완료");
         return new ResponseEntity<>(new ResponseDto<>(1, "이메일 보냄", null),
                 HttpStatus.CREATED);
