@@ -27,7 +27,7 @@ public class LoveService {
     }
 
     @Transactional
-    public void 사랑하기삭제(int id, User principal) {
+    public void 사랑하기삭제(int id) {
         try {
             loveRepository.deleteById(id);
         } catch (Exception e) {

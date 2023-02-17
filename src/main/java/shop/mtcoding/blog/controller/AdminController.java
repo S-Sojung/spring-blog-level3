@@ -7,9 +7,11 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.ResponseDto;
@@ -21,6 +23,7 @@ import shop.mtcoding.blog.model.BoardRepository;
 import shop.mtcoding.blog.model.ReplyRepository;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.model.UserRepository;
+import shop.mtcoding.blog.service.AdminService;
 import shop.mtcoding.blog.service.UserService;
 
 @Controller
@@ -36,6 +39,19 @@ public class AdminController {
     BoardRepository boardRepository;
     @Autowired
     ReplyRepository replyRepository;
+    @Autowired
+    private AdminService adminService;
+
+    @PostMapping("/admin/mail")
+    public @ResponseBody ResponseEntity<?> sendMail(@RequestBody String email) {
+        String e = email.split(":")[1];
+        String e2 = e.substring(1, e.length() - 2);
+        // System.out.println("테스트 : " + e2);
+        adminService.mailSend(e2);
+        // System.out.println("테스트 : 완료");
+        return new ResponseEntity<>(new ResponseDto<>(1, "이메일 보냄", null),
+                HttpStatus.CREATED);
+    }
 
     @GetMapping("/admin")
     public String admin() {

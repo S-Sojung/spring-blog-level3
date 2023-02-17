@@ -53,7 +53,7 @@ public class LoveController {
             throw new CustomApiException("인증이 되지 않았습니다.", HttpStatus.UNAUTHORIZED); // 401
         }
 
-        loveService.사랑하기삭제(id, principal);
+        loveService.사랑하기삭제(id);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", 0), HttpStatus.OK);
     }

@@ -76,13 +76,6 @@ public class BoardController {
             model.addAttribute("mylove", love);
         }
 
-        // LoveCountRespDto loves = loveRepository.findByBoardIdCount(id);
-        // if (loves == null) {
-        // loves = new LoveCountRespDto();
-        // loves.setCount(0);
-        // }
-        // System.out.println(loves.getCount());
-
         model.addAttribute("boardDto", boardRepository.findByIdWithUser(id));
         model.addAttribute("replyDtos", replyRepository.findByBoardIdWithUser(id));
         // model.addAttribute("loves", loves.getCount());
